@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: trading-platform
+  profiles:
+    active: test

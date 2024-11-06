@@ -1,0 +1,19 @@
+spring:
+  data:
+    r2dbc:
+      repositories:
+        enabled: true
+  r2dbc:
+    url: r2dbc:mysql://localhost:3306/test
+    username: test
+    password: test
+  sql:
+    init:
+      mode: always
+logging:
+  level:
+    org:
+      springframework:
+        r2dbc: DEBUG
+      testcontainers:
+        r2dbc: DEBUG
