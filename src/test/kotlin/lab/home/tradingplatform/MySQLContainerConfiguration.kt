@@ -10,7 +10,7 @@ import org.testcontainers.utility.DockerImageName
 class MySQLContainerConfiguration {
     @Bean
     @ServiceConnection
-    fun mySQLContainer() : MySQLContainer<*> {
+    fun mySQLContainer(): MySQLContainer<*> {
         return MySQLContainer(DockerImageName.parse("mysql:8.0.36"))
             .withDatabaseName("test")
             .withUsername("test")

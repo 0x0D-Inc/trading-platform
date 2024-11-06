@@ -8,5 +8,5 @@ data class Styler(
     @Id
     val id: Int?,
     var name: String,
-    var shopId: String
+    var shopId: String,
 )

@@ -11,22 +11,22 @@ import org.springframework.context.annotation.Import
 @SpringBootTest
 @Import(MySQLContainerConfiguration::class)
 internal class TradingPlatformApplicationTest(
-   private val sut: StylerRepository
-): FunSpec({
-    lateinit var styler: Styler
+    private val sut: StylerRepository,
+) : FunSpec({
+        lateinit var styler: Styler
 
-    beforeTest {
-        styler = Styler(null, "테스트", "1")
-        styler = runBlocking {
-            sut.save(styler)
+        beforeTest {
+            styler = Styler(null, "테스트", "1")
+            styler =
+                runBlocking {
+                    sut.save(styler)
+                }
         }
-    }
 
-    test("update with modifying") {
-        runBlocking {
-            val result = sut.updateWithModifying("P", styler.id!!)
-            result shouldNotBe  null
+        test("update with modifying") {
+            runBlocking {
+                val result = sut.updateWithModifying("P", styler.id!!)
+                result shouldNotBe null
+            }
         }
-    }
-
-})
+    })

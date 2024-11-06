@@ -1,3 +1,4 @@
+import com.diffplug.gradle.spotless.SpotlessExtension
 import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
@@ -7,6 +8,8 @@ plugins {
     kotlin("plugin.spring") version "1.9.25"
     id("org.springframework.boot") version "3.3.5"
     id("io.spring.dependency-management") version "1.1.6"
+
+    id("com.diffplug.spotless") version "6.25.0"
 }
 
 group = "lab.home"
@@ -41,11 +44,11 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
 
-    /* mysql connectors */
-    runtimeOnly("com.mysql:mysql-connector-j")      // JDBC
-    runtimeOnly("io.asyncer:r2dbc-mysql")           // R2DBC
+    // mysql connectors
+    runtimeOnly("com.mysql:mysql-connector-j") // JDBC
+    runtimeOnly("io.asyncer:r2dbc-mysql") // R2DBC
 
-    /* kotest and mockk */
+    // kotest and mockk
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVer")
     testImplementation("io.kotest:kotest-assertions-core:$kotestVer")
     testImplementation("io.kotest:kotest-property:$kotestVer")
@@ -54,12 +57,15 @@ dependencies {
     testImplementation("io.kotest.extensions:kotest-extensions-mockserver:$kotestMockServerExtVer")
     testImplementation("io.mockk:mockk:$mockkVer")
 
-    /* Testcontainers */
+    // Testcontainers
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:testcontainers:$tcVer")
     testImplementation(platform("org.testcontainers:testcontainers-bom:$tcVer"))
     testImplementation("org.testcontainers:mysql")
     testImplementation("org.testcontainers:r2dbc")
+
+    // Arch Linter : Konsist
+    testImplementation("com.lemonappdev:konsist:0.16.1")
 }
 
 kotlin {
@@ -72,5 +78,36 @@ tasks.withType<Test>().configureEach {
     useJUnitPlatform()
     testLogging {
         events = setOf(FAILED, PASSED, SKIPPED)
+    }
+}
+
+configure<SpotlessExtension> {
+    kotlin {
+        target("**/*.kt")
+        ktlint()
+        indentWithSpaces()
+        endWithNewline()
+    }
+    kotlinGradle {
+        target("**/*.gradle.kts")
+        ktlint()
+        indentWithSpaces()
+        endWithNewline()
+    }
+
+    java {
+        target("**/*.java")
+        indentWithSpaces()
+        endWithNewline()
+        removeUnusedImports()
+    }
+}
+
+afterEvaluate {
+    kotlin.runCatching {
+        tasks.getByPath("classes").dependsOn(tasks.spotlessApply)
+    }
+    kotlin.runCatching {
+        tasks.getByPath("preBuild").dependsOn(tasks.spotlessApply)
     }
 }
