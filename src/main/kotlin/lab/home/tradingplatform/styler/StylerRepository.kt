@@ -17,12 +17,12 @@ interface StylerRepository : CoroutineCrudRepository<Styler, Int> {
     @Query("UPDATE styler SET name = :name WHERE id = :id")
     suspend fun updateWithModifying(
         name: String,
-        id: Int,
+        id: Int
     ): Int?
 
     @Query("UPDATE styler SET name = :name WHERE id = :id")
     suspend fun updateWithoutModifying(
         name: String,
-        id: Int,
+        id: Int
     ): Unit
 }

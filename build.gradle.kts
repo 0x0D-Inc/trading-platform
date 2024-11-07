@@ -8,7 +8,6 @@ plugins {
     kotlin("plugin.spring") version "1.9.25"
     id("org.springframework.boot") version "3.3.5"
     id("io.spring.dependency-management") version "1.1.6"
-
     id("com.diffplug.spotless") version "6.25.0"
 }
 
@@ -25,6 +24,8 @@ repositories {
     mavenCentral()
 }
 
+val buildDir = "${layout.buildDirectory.asFile.get()}"
+
 val kotestVer = "5.9.1"
 val kotestSpringExtVer = "1.3.0"
 val kotestMockServerExtVer = "1.3.0"
@@ -32,6 +33,8 @@ val kotestTcExtVer = "2.0.2"
 
 val mockkVer = "1.13.13"
 val tcVer = "1.20.3"
+val ktlintVer = "1.4.1"
+val konsistVer = "0.16.1"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
@@ -65,7 +68,7 @@ dependencies {
     testImplementation("org.testcontainers:r2dbc")
 
     // Arch Linter : Konsist
-    testImplementation("com.lemonappdev:konsist:0.16.1")
+    testImplementation("com.lemonappdev:konsist:$konsistVer")
 }
 
 kotlin {
@@ -84,21 +87,24 @@ tasks.withType<Test>().configureEach {
 configure<SpotlessExtension> {
     kotlin {
         target("**/*.kt")
-        ktlint()
-        indentWithSpaces()
-        endWithNewline()
+        targetExclude("$buildDir/**/*.kt")
+        ktlint(ktlintVer).editorConfigOverride(
+            mapOf(
+                "ktlint_code_style" to "ktlint_official"
+            )
+        )
     }
     kotlinGradle {
         target("**/*.gradle.kts")
-        ktlint()
-        indentWithSpaces()
-        endWithNewline()
+        targetExclude("$buildDir/**/*.kt")
+        ktlint(ktlintVer).editorConfigOverride(
+            mapOf(
+                "ktlint_code_style" to "ktlint_official"
+            )
+        )
     }
-
     java {
         target("**/*.java")
-        indentWithSpaces()
-        endWithNewline()
         removeUnusedImports()
     }
 }

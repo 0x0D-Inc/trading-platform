@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Import
 @SpringBootTest
 @Import(MySQLContainerConfiguration::class)
 internal class TradingPlatformApplicationTest(
-    private val sut: StylerRepository,
+    private val sut: StylerRepository
 ) : FunSpec({
         lateinit var styler: Styler
 
