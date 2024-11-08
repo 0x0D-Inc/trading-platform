@@ -45,7 +45,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 //    implementation("org.springframework.boot:spring-boot-starter-security")
 //    testImplementation("org.springframework.security:spring-security-test")
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
 
@@ -71,6 +70,9 @@ dependencies {
 
     // Arch Linter : Konsist
     testImplementation("com.lemonappdev:konsist:$konsistVer")
+
+    // Dev tools
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
 }
 
 kotlin {
@@ -92,7 +94,8 @@ configure<SpotlessExtension> {
         targetExclude("$buildDir/**/*.kt")
         ktlint(ktlintVer).editorConfigOverride(
             mapOf(
-                "ktlint_code_style" to "ktlint_official"
+                "ktlint_code_style" to "ktlint_official",
+                "ktlint_standard_package-name" to "disabled"
             )
         )
     }
