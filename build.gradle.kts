@@ -6,6 +6,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
 plugins {
     kotlin("jvm") version "1.9.25"
     kotlin("plugin.spring") version "1.9.25"
+    kotlin("plugin.serialization") version "1.9.25"
     id("org.springframework.boot") version "3.3.5"
     id("io.spring.dependency-management") version "1.1.6"
     id("com.diffplug.spotless") version "6.25.0"
@@ -39,24 +40,28 @@ val ktLoggingVer = "7.0.0"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.springframework.boot:spring-boot-starter-webflux") {
+        exclude(group = "com.fasterxml.jackson.core")
+    }
+     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j")    // MDC support, https://kotlinlang.org/api/kotlinx.coroutines/
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
+//    implementation("org.springframework.boot:spring-boot-starter-validation")
 //    implementation("org.springframework.boot:spring-boot-starter-security")
 //    testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
 
     // logger
-    implementation("io.github.oshai:kotlin-logging-jvm:$ktLoggingVer")  // https://github.com/oshai/kotlin-logging/wiki
+    implementation("io.github.oshai:kotlin-logging-jvm:$ktLoggingVer") // https://github.com/oshai/kotlin-logging/wiki
 
     // mysql connectors
     runtimeOnly("com.mysql:mysql-connector-j") // JDBC
-    runtimeOnly("io.asyncer:r2dbc-mysql") // R2DBC
+    implementation("io.asyncer:r2dbc-mysql") // R2DBC
 
     // kotest and mockk
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVer")
@@ -101,7 +106,9 @@ configure<SpotlessExtension> {
         ktlint(ktlintVer).editorConfigOverride(
             mapOf(
                 "ktlint_code_style" to "ktlint_official",
-                "ktlint_standard_package-name" to "disabled"
+                "ktlint_standard_package-name" to "disabled",
+                "ktlint_standard_no-consecutive-comments" to "disabled",
+                "ktlint_standard_backing-property-naming" to "disabled"
             )
         )
     }

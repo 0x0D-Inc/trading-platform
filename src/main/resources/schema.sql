@@ -1,16 +1,52 @@
-CREATE TABLE IF NOT EXISTS shop (
-                      id INT AUTO_INCREMENT PRIMARY KEY,
-                      name VARCHAR(255)
-);
+CREATE TABLE IF NOT EXISTS users (
+                                     id BINARY(16) NOT NULL PRIMARY KEY,
+    full_name VARCHAR(255),
+    email VARCHAR(255),
+    user_role VARCHAR(255) NOT NULL,
+    verification_type VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    updated_at TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)
+    );
 
-CREATE TABLE IF NOT EXISTS styler (
-                        id INT AUTO_INCREMENT PRIMARY KEY,
-                        name VARCHAR(255),
-                        shop_id INT,
-                        FOREIGN KEY (shop_id) REFERENCES shop(id)
-);
+INSERT INTO users(
+    id,
+    full_name,
+    email,
+    user_role,
+    verification_type)
+VALUES (
+           UUID_TO_BIN(UUID()),
+           "John Doe",
+           "john@example.com",
+           "CUSTOMER",
+           "EMAIL"
+       );
 
-INSERT INTO shop(name) VALUES ('준오헤어');
+INSERT INTO users(
+    id,
+    full_name,
+    email,
+    user_role,
+    verification_type)
+VALUES (
+           UUID_TO_BIN(UUID()),
+           "Jane Smith",
+           "jane@example.com",
+           "ADMIN",
+           "MOBILE"
+       );
 
-INSERT INTO styler(name, shop_id) VALUES ('홍길동', 1);
-INSERT INTO styler(name, shop_id) VALUES ('이순신', 1);
+
+INSERT INTO users(
+    id,
+    full_name,
+    email,
+    user_role,
+    verification_type)
+VALUES (
+           UUID_TO_BIN(UUID()),
+           "Bob Johnson",
+           "bob@example.com",
+           "CUSTOMER",
+           "EMAIL"
+       );

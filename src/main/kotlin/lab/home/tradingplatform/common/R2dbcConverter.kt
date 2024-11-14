@@ -9,7 +9,7 @@ import java.util.*
 class R2dbcConverter
 
 @WritingConverter
-class UUIDToByteArrayConverter : Converter<UUID, ByteArray> {
+class UuidWriteConverter : Converter<UUID, ByteArray> {
     override fun convert(source: UUID): ByteArray {
         val byteBuffer = ByteBuffer.wrap(ByteArray(16))
         byteBuffer.putLong(source.mostSignificantBits)
@@ -19,7 +19,7 @@ class UUIDToByteArrayConverter : Converter<UUID, ByteArray> {
 }
 
 @ReadingConverter
-class ByteArrayToUUIDConverter : Converter<ByteArray, UUID> {
+class UuidReadConverter : Converter<ByteArray, UUID> {
     override fun convert(source: ByteArray): UUID {
         val byteBuffer = ByteBuffer.wrap(source)
         val high = byteBuffer.long

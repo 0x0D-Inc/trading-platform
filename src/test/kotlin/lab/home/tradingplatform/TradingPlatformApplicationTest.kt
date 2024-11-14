@@ -1,31 +1,70 @@
 package lab.home.tradingplatform
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.kotest.common.runBlocking
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldNotBe
-import lab.home.tradingplatform.styler.Styler
-import lab.home.tradingplatform.styler.StylerRepository
+import kotlinx.coroutines.test.runTest
+import lab.home.tradingplatform.auth.adapter.out.persistence.UserCoroutineRepository
+import lab.home.tradingplatform.auth.adapter.out.persistence.UserR2dbcEntity
+import lab.home.tradingplatform.auth.domain.UserRole
+import lab.home.tradingplatform.auth.domain.VerificationType
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
+
+private val logger = KotlinLogging.logger { }
 
 @SpringBootTest
 @Import(MySQLContainerConfiguration::class)
 internal class TradingPlatformApplicationTest(
-    private val sut: StylerRepository
+    private val sut: UserCoroutineRepository
 ) : FunSpec({
-        lateinit var styler: Styler
+        lateinit var user: UserR2dbcEntity
 
         beforeTest {
-            styler = Styler(null, "테스트", "1")
-            styler =
+            user =
+                UserR2dbcEntity(
+                    fullName = "Alice Apple",
+                    email = "alice.apple@example.com",
+                    userRole = UserRole.ADMIN,
+                    verificationType = VerificationType.MOBILE
+                )
+            user =
                 runBlocking {
-                    sut.save(styler)
+                    sut.save(user)
                 }
+            logger.info { "Saved Entity : $user" }
         }
 
         test("update with modifying") {
-            runBlocking {
-                val result = sut.updateWithModifying("P", styler.id!!)
+            runTest {
+                logger.info { "${user.id} will be updated" }
+                val result = sut.updateWithModifying("Alice Google", user.id)
+                result shouldNotBe null
+            }
+        }
+
+        test("update without modifying") {
+            runTest {
+                logger.info { "${user.id} will be updated" }
+                val result = sut.updateWithoutModifying("Alice Google", user.id)
+                result shouldNotBe null
+            }
+        }
+
+        test("find user by full name") {
+            runTest {
+                val result =
+                    sut.findByFullName("Alice Apple").collect {
+                        logger.info { "$it" }
+                    }
+                result shouldNotBe null
+            }
+        }
+
+        test("read all records") {
+            runTest {
+                val result = sut.findAll().collect { logger.info { "$it" } }
                 result shouldNotBe null
             }
         }
