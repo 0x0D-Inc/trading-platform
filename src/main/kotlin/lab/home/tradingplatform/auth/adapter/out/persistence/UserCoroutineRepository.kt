@@ -20,29 +20,4 @@ interface UserCoroutineRepository : CoroutineCrudRepository<UserR2dbcEntity, UUI
         fullName: String,
         id: UUID
     ): Int?
-
-    @Query("UPDATE users SET full_name = :fullName WHERE id = :id")
-    suspend fun updateWithoutModifying(
-        fullName: String,
-        id: UUID
-    ): Unit
 }
-
-/*
-suspend fun findByShopId(shopId: Int): Styler?
-
-@Query("SELECT * FROM styler WHERE name = :name")
-suspend fun findByName(name: String): Flow<Styler>
-
-@Modifying
-@Query("UPDATE styler SET name = :name WHERE id = :id")
-suspend fun updateWithModifying(
-    name: String,
-    id: Int
-): Int?
-
-@Query("UPDATE styler SET name = :name WHERE id = :id")
-suspend fun updateWithoutModifying(
-    name: String,
-    id: Int
-): Unit*/

@@ -5,11 +5,10 @@ import org.springframework.http.codec.ServerCodecConfigurer
 import org.springframework.http.codec.json.KotlinSerializationJsonDecoder
 import org.springframework.http.codec.json.KotlinSerializationJsonEncoder
 import org.springframework.http.converter.json.KotlinSerializationJsonHttpMessageConverter
-import org.springframework.web.reactive.config.EnableWebFlux
 import org.springframework.web.reactive.config.WebFluxConfigurer
 
-@Configuration
 // @EnableWebFlux
+@Configuration
 class WebFluxConfig : WebFluxConfigurer {
     /*@Bean
     fun kotlinSerializationJson() = Json {
@@ -29,5 +28,5 @@ class WebFluxConfig : WebFluxConfigurer {
         configurer.defaultCodecs().configureDefaultCodec { KotlinSerializationJsonHttpMessageConverter() }
         configurer.defaultCodecs().kotlinSerializationJsonEncoder(KotlinSerializationJsonEncoder())
         configurer.defaultCodecs().kotlinSerializationJsonDecoder(KotlinSerializationJsonDecoder())
-   }
+    }
 }

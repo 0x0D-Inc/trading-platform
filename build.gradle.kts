@@ -30,7 +30,6 @@ val buildDir = "${layout.buildDirectory.asFile.get()}"
 val kotestVer = "5.9.1"
 val kotestSpringExtVer = "1.3.0"
 val kotestMockServerExtVer = "1.3.0"
-val kotestTcExtVer = "2.0.2"
 
 val mockkVer = "1.13.13"
 val tcVer = "1.20.3"
@@ -43,7 +42,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux") {
         exclude(group = "com.fasterxml.jackson.core")
     }
-     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")

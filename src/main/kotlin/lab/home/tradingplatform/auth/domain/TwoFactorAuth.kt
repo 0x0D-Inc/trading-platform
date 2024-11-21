@@ -1,6 +1,6 @@
 package lab.home.tradingplatform.auth.domain
 
 data class TwoFactorAuth(
-    val isEnabled: Boolean = false,
-    val sendTo: VerificationType
+    val sendTo: VerificationType = VerificationType.NONE,
+    val isEnabled: Boolean = false
 )

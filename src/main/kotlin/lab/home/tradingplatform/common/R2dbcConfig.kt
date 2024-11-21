@@ -1,6 +1,5 @@
 package lab.home.tradingplatform.common
 
-import io.github.oshai.kotlinlogging.KotlinLogging
 import io.r2dbc.spi.ConnectionFactory
 import lab.home.tradingplatform.auth.adapter.out.persistence.UserRoleReadConverter
 import lab.home.tradingplatform.auth.adapter.out.persistence.UserRoleWriteConverter
@@ -14,34 +13,16 @@ import org.springframework.data.r2dbc.dialect.DialectResolver
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories
 import org.springframework.transaction.annotation.EnableTransactionManagement
 
-private val logger = KotlinLogging.logger { }
-
 @Configuration
 @EnableTransactionManagement
 @EnableR2dbcRepositories
 @EnableR2dbcAuditing
 class R2dbcConfig {
-    /*val customConverters = listOf<Any>(
-        // common converters
-        UuidWriteConverter(),
-        UuidReadConverter(),
-        // domain specific converters
-    //            UserIdWriteConverter(),
-    //            UserIdReadConverter(),
-        UserRoleWriteConverter(),
-        UserRoleReadConverter(),
-        VerificationTypeWriteConverter(),
-        VerificationTypeReadConverter()
-    )*/
-
     @Bean
     fun r2dbcCustomConversions(connectionFactory: ConnectionFactory): R2dbcCustomConversions {
         val dialect = DialectResolver.getDialect(connectionFactory)
         val converters =
-            dialect.converters +
-                R2dbcCustomConversions.STORE_CONVERTERS +
-//                    customConverters
-                getCustomConverters()
+            dialect.converters + R2dbcCustomConversions.STORE_CONVERTERS + getCustomConverters()
 
         return R2dbcCustomConversions.of(dialect, converters)
     }

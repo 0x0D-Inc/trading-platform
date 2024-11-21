@@ -13,6 +13,12 @@ abstract class R2dbcBaseEntity(
     @Column("id")
     private val id: UUID = UUIDv7.randomUUID()
 ) : Persistable<UUID> {
+    @Column("is_locked")
+    var isLocked: Boolean = false
+
+    @Column("is_enabled")
+    var isEnabled: Boolean = true
+
     @CreatedDate
     @Column("created_at")
     var createdAt: Instant? = null
@@ -35,26 +41,8 @@ abstract class R2dbcBaseEntity(
     }
 
     override fun hashCode(): Int = id.hashCode()
-}
 
-// @WritingConverter
-// class BaseEntityWriteConverter : Converter<BaseEntityR2DBC, Map<String, Any>> {
-//    override fun convert(source: BaseEntityR2DBC): Map<String, Any> {
-//        val result = mutableMapOf<String, Any>()
-//        result["created_at"] = source.createdAt
-//        result["updated_at"] = source.updatedAt
-//        return result
-//    }
-// }
-//
-// @ReadingConverter
-// class BaseEntityReadConverter : Converter<Row, BaseEntityR2DBC> {
-//    override fun convert(source: Row): BaseEntityR2DBC =
-//        object : BaseEntityR2DBC() {
-//            init {
-//                // TODO : Throw if can't get times
-//                createdAt = source.get("created_at", Instant::class.java) ?: Instant.now()
-//                updatedAt = source.get("updated_at", Instant::class.java) ?: Instant.now()
-//            }
-//        }
-// }
+    override fun toString(): String {
+        return "R2dbcBaseEntity(id=$id, isLocked=$isLocked, isEnabled=$isEnabled, createdAt=$createdAt, updatedAt=$updatedAt)"
+    }
+}
