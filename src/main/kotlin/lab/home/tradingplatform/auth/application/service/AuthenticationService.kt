@@ -29,16 +29,9 @@ class AuthenticationService(
                 isEnabled = true,
                 id = newUserId
             )
-        /* TODO: Throw Exception */
-        /*
-        if (isEmailAlreadyUsed) {
-            throw RegisterUserException(...)
-        }
-         */
 
+        /* TODO: Exception 을 어느 단계에서 던질까? */
         val savedEntity = userPersistenceAdapter.saveUser(user)
-
-        /* TODO: Throw Exception */
 
         return savedEntity.toRegisterUserResult()
 

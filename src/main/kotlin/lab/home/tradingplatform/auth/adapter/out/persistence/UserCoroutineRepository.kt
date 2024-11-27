@@ -14,10 +14,10 @@ interface UserCoroutineRepository : CoroutineCrudRepository<UserR2dbcEntity, UUI
     @Query("SELECT * FROM users WHERE full_name = :fullName")
     suspend fun findByFullName(fullName: String): Flow<UserR2dbcEntity>
 
-    @Modifying // Not Needed
+    /*@Modifying // Not Needed
     @Query("UPDATE users SET full_name = :fullName WHERE id = :id")
     suspend fun updateWithModifying(
         fullName: String,
         id: UUID
-    ): Int?
+    ): Int?*/
 }

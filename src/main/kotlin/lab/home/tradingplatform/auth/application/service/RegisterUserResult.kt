@@ -13,6 +13,7 @@ data class RegisterUserResult(
     val role: UserRole
 )
 
+// Domain to Controller
 fun User.toRegisterUserResult() : RegisterUserResult = RegisterUserResult(
     this.id!!.value,        // XXX
     this.fullName,

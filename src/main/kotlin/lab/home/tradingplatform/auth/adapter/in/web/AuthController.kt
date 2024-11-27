@@ -2,7 +2,6 @@ package lab.home.tradingplatform.auth.adapter.`in`.web
 
 import lab.home.tradingplatform.auth.application.port.`in`.UserRegisterCommand
 import lab.home.tradingplatform.auth.application.port.`in`.UserRegisterUseCase
-import lab.home.tradingplatform.auth.application.service.RegisterUserException
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpStatus
@@ -31,26 +30,12 @@ class AuthController {
 class AuthHandler(
     private val userRegisterUseCase: UserRegisterUseCase
 ) {
-    suspend fun register(serverRequest: ServerRequest): ServerResponse =
-        try {
-            val command = serverRequest.awaitBody<UserRegisterCommand>()
-            val registerUserResult = userRegisterUseCase.registerUser(command)
-            ServerResponse
-                .status(HttpStatus.CREATED)
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValueAndAwait(mapOf("success" to true, "message" to "User registered successfully"))
-            /*if (registerUserResult != null) {
-                ServerResponse
-                    .status(HttpStatus.CREATED)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValueAndAwait(mapOf("success" to true, "message" to "User registered successfully"))
-            } else {
-                ServerResponse
-                    .badRequest()
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValueAndAwait(mapOf("success" to false, "message" to "User registration failed"))
-            }*/
-        } catch (e: Exception) {
-            throw RegisterUserException("User register failed")
-        }
+    suspend fun register(serverRequest: ServerRequest): ServerResponse {
+        val command = serverRequest.awaitBody<UserRegisterCommand>()
+        val registerUserResult = userRegisterUseCase.registerUser(command)
+        return ServerResponse
+            .status(HttpStatus.CREATED)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValueAndAwait(registerUserResult)
+    }
 }

@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
     schema_version INT DEFAULT 0,
     id BINARY(16) NOT NULL PRIMARY KEY,
     full_name VARCHAR(255),
-    email VARCHAR(255),
+    email VARCHAR(255) UNIQUE,
     user_role VARCHAR(255) NOT NULL,
 --     verification_type VARCHAR(255) NOT NULL,
     two_factor_auth_is_enabled TINYINT(1) DEFAULT 0 NOT NULL,
