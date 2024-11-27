@@ -1,4 +1,4 @@
-package lab.home.tradingplatform.common
+package lab.home.tradingplatform.common.r2dbc
 
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.convert.ReadingConverter

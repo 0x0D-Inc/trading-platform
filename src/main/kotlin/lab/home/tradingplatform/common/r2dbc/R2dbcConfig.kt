@@ -1,4 +1,4 @@
-package lab.home.tradingplatform.common
+package lab.home.tradingplatform.common.r2dbc
 
 import io.r2dbc.spi.ConnectionFactory
 import lab.home.tradingplatform.auth.adapter.out.persistence.UserRoleReadConverter

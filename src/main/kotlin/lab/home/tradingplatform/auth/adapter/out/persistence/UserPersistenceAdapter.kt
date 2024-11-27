@@ -6,7 +6,7 @@ import lab.home.tradingplatform.common.PersistenceAdapter
 
 @PersistenceAdapter
 class UserPersistenceAdapter(
-    private val userCoroutineRepository: UserCoroutineRepository,
+    private val userCoroutineRepository: UserCoroutineRepository
 ) : UserPort {
     override suspend fun saveUser(user: User): User {
         val newUserEntity = user.toR2dbcEntity()

@@ -15,23 +15,32 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class AuthenticationService(
     private val userPersistenceAdapter: UserPersistenceAdapter
-): UserRegisterUseCase {
-    override suspend fun registerUser(userRegisterCommand: UserRegisterCommand): Boolean {
-        /* Domain 으로 가지고 이것 저것 Domain Service 호출 */
+) : UserRegisterUseCase {
+    override suspend fun registerUser(userRegisterCommand: UserRegisterCommand): RegisterUserResult {
         val newUserId = UserId(UUIDv7.randomUUID())
 
-        val user = User(
-            fullName = userRegisterCommand.fullName,
-            email = userRegisterCommand.email,
-            userRole = UserRole.CUSTOMER,
-            TwoFactorAuth(),    // TODO: mobile <-> sendTo data mapping???
-            isLocked = false,
-            isEnabled = true,
-            id = newUserId
-        )
+        val user =
+            User(
+                fullName = userRegisterCommand.fullName,
+                email = userRegisterCommand.email,
+                userRole = UserRole.CUSTOMER,
+                TwoFactorAuth(), // TODO: mobile <-> sendTo data mapping???
+                isLocked = false,
+                isEnabled = true,
+                id = newUserId
+            )
+        /* TODO: Throw Exception */
+        /*
+        if (isEmailAlreadyUsed) {
+            throw RegisterUserException(...)
+        }
+         */
 
         val savedEntity = userPersistenceAdapter.saveUser(user)
-        /* validate */
-        return savedEntity.id == newUserId
+
+        /* TODO: Throw Exception */
+
+        return savedEntity.toRegisterUserResult()
+
     }
 }

@@ -25,7 +25,7 @@ repositories {
     mavenCentral()
 }
 
-val buildDir = "${layout.buildDirectory.asFile.get()}"
+val projectBuildDir = "${layout.buildDirectory.asFile.get()}"
 
 val kotestVer = "5.9.1"
 val kotestSpringExtVer = "1.3.0"
@@ -101,7 +101,7 @@ tasks.withType<Test>().configureEach {
 configure<SpotlessExtension> {
     kotlin {
         target("**/*.kt")
-        targetExclude("$buildDir/**/*.kt")
+        targetExclude("$projectBuildDir/**/*.kt")
         ktlint(ktlintVer).editorConfigOverride(
             mapOf(
                 "ktlint_code_style" to "ktlint_official",
@@ -113,7 +113,7 @@ configure<SpotlessExtension> {
     }
     kotlinGradle {
         target("**/*.gradle.kts")
-        targetExclude("$buildDir/**/*.kt")
+        targetExclude("$projectBuildDir/**/*.kt")
         ktlint(ktlintVer).editorConfigOverride(
             mapOf(
                 "ktlint_code_style" to "ktlint_official"

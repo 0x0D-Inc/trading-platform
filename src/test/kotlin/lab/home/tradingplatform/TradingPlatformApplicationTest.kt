@@ -9,7 +9,6 @@ private val logger = KotlinLogging.logger { }
 
 @SpringBootTest
 @Import(MySQLContainerConfiguration::class)
-internal class TradingPlatformApplicationTest(
-) : BehaviorSpec({
-
-})
+internal class TradingPlatformApplicationTest :
+    BehaviorSpec({
+    })

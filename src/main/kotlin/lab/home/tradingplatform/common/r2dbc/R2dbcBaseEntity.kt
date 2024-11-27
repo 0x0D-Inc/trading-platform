@@ -1,5 +1,6 @@
-package lab.home.tradingplatform.common
+package lab.home.tradingplatform.common.r2dbc
 
+import lab.home.tradingplatform.common.UUIDv7
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.LastModifiedDate
@@ -29,6 +30,7 @@ abstract class R2dbcBaseEntity(
 
     override fun getId(): UUID = id
 
+    // XXX: 만약, 서버가 죽어서 메모리에 있는 내용이 모두 날아가버린다면?? -> isNew 를 어떻게 판단 할까?
     override fun isNew(): Boolean = createdAt == null && updatedAt == null
 
     override fun equals(other: Any?): Boolean {
@@ -42,7 +44,6 @@ abstract class R2dbcBaseEntity(
 
     override fun hashCode(): Int = id.hashCode()
 
-    override fun toString(): String {
-        return "R2dbcBaseEntity(id=$id, isLocked=$isLocked, isEnabled=$isEnabled, createdAt=$createdAt, updatedAt=$updatedAt)"
-    }
+    override fun toString(): String =
+        "R2dbcBaseEntity(id=$id, isLocked=$isLocked, isEnabled=$isEnabled, createdAt=$createdAt, updatedAt=$updatedAt)"
 }

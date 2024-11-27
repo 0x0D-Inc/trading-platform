@@ -1,13 +1,15 @@
 package lab.home.tradingplatform.auth.domain
 
-import java.util.UUID
 import java.time.Instant
+import java.util.UUID
 
 @JvmInline
-value class UserId(val value: UUID)
+value class UserId(
+    val value: UUID
+)
 
 class User(
-    fullName: String,       // Should we merge to a class??
+    fullName: String, // Should we merge to a class??
     email: String,
     userRole: UserRole,
     twoFactorAuth: TwoFactorAuth,
@@ -37,11 +39,11 @@ class User(
         private set
 
     init {
-        /* Domain model verification */
+        // Domain model verification
     }
 
     companion object {
-        /* factory functions */
+        // factory functions
     }
 
     fun changeTwoFactorAuth(twoFactorAuth: TwoFactorAuth): User {
@@ -49,8 +51,8 @@ class User(
         return this
     }
 
-    fun changeUserRole (newRole: UserRole): User {
-        /* Invalid User Role Exception ?? */
+    fun changeUserRole(newRole: UserRole): User {
+        // Invalid User Role Exception ??
         this.userRole = newRole
         return this
     }

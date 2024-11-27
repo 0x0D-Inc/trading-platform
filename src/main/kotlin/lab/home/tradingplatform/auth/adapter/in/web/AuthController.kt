@@ -2,6 +2,7 @@ package lab.home.tradingplatform.auth.adapter.`in`.web
 
 import lab.home.tradingplatform.auth.application.port.`in`.UserRegisterCommand
 import lab.home.tradingplatform.auth.application.port.`in`.UserRegisterUseCase
+import lab.home.tradingplatform.auth.application.service.RegisterUserException
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpStatus
@@ -14,45 +15,42 @@ import org.springframework.web.reactive.function.server.bodyValueAndAwait
 import org.springframework.web.reactive.function.server.coRouter
 
 @Configuration
-class AuthController(
-    private val exceptionHandler: WebGlobalExceptionHandler
-) {
+class AuthController {
     @Bean
-    fun authRouter(authHandler: AuthHandler) = coRouter {
-        accept(MediaType.APPLICATION_JSON).nest {
-            "/auth".nest {
-                POST("/signup", authHandler::register)
+    fun authRouter(authHandler: AuthHandler) =
+        coRouter {
+            accept(MediaType.APPLICATION_JSON).nest {
+                "/auth".nest {
+                    POST("/signup", authHandler::register)
+                }
             }
         }
-//        onError<Exception> { ex, _ -> exceptionHandler.handleException(ex) }
-//        onError<BadRequestException> { ex, _ -> exceptionHandler.handleException(ex) }
-    }
 }
-
 
 @Component
 class AuthHandler(
     private val userRegisterUseCase: UserRegisterUseCase
 ) {
-    suspend fun register(serverRequest: ServerRequest) : ServerResponse {
-        return try {
+    suspend fun register(serverRequest: ServerRequest): ServerResponse =
+        try {
             val command = serverRequest.awaitBody<UserRegisterCommand>()
-            val result = userRegisterUseCase.registerUser(command)
-
-            if (result) {
-                ServerResponse.status(HttpStatus.CREATED)
+            val registerUserResult = userRegisterUseCase.registerUser(command)
+            ServerResponse
+                .status(HttpStatus.CREATED)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValueAndAwait(mapOf("success" to true, "message" to "User registered successfully"))
+            /*if (registerUserResult != null) {
+                ServerResponse
+                    .status(HttpStatus.CREATED)
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValueAndAwait(mapOf("success" to true, "message" to "User registered successfully"))
             } else {
-                ServerResponse.badRequest()
+                ServerResponse
+                    .badRequest()
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValueAndAwait(mapOf("success" to false, "message" to "User registration failed"))
-            }
+            }*/
         } catch (e: Exception) {
-            ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValueAndAwait(mapOf("success" to false, "message" to "An error occurred during registration")
-                )
+            throw RegisterUserException("User register failed")
         }
-    }
 }

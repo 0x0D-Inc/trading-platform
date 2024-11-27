@@ -7,6 +7,6 @@ data class UserRegisterCommand(
     val mobile: String
 ) {
     init {
-        /* Verify arguments */
+        // Verify arguments
     }
 }

@@ -1,99 +1,48 @@
 package lab.home.tradingplatform.auth.adapter.out.persistence
 
 import io.kotest.core.spec.style.BehaviorSpec
-import lab.home.tradingplatform.MySQLContainerConfiguration
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Import
-import org.springframework.r2dbc.core.DatabaseClient
+import io.kotest.matchers.shouldBe
+import io.mockk.coEvery
+import io.mockk.mockk
+import lab.home.tradingplatform.auth.domain.TwoFactorAuth
+import lab.home.tradingplatform.auth.domain.User
+import lab.home.tradingplatform.auth.domain.UserId
+import lab.home.tradingplatform.auth.domain.UserRole
+import lab.home.tradingplatform.common.UUIDv7
+import java.time.Instant
 
-@SpringBootTest
-@Import(MySQLContainerConfiguration::class)
-class UserPersistenceAdapterTest(
-    private val userRepository: UserCoroutineRepository,
-    private val databaseClient: DatabaseClient
-) : BehaviorSpec({
-     /*   beforeSpec {
-            databaseClient
-                .sql("DROP TABLE IF EXISTS users")
-                .fetch()
-                .rowsUpdated()
-                .awaitSingle()
-            databaseClient
-                .sql(
-                    """
-                    CREATE TABLE IF NOT EXISTS users (
-                        id BINARY(16) NOT NULL PRIMARY KEY,
-                        full_name VARCHAR(255),
-                        email VARCHAR(255),
-                        user_role VARCHAR(255) NOT NULL,
-                        verification_type VARCHAR(255) NOT NULL,
-                        created_at TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-                        updated_at TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)
-                        )
-                    """.trimIndent()
-                ).fetch()
-                .rowsUpdated()
-                .awaitSingle()
-        }
+class UserPersistenceAdapterTest :
+    BehaviorSpec({
+        val userCoroutineRepository = mockk<UserCoroutineRepository>()
+        val userPersistenceAdapter = UserPersistenceAdapter(userCoroutineRepository)
 
-        afterSpec {
-            databaseClient
-                .sql("DROP TABLE IF EXISTS users")
-                .fetch()
-                .rowsUpdated()
-                .awaitSingle()
-        }
-
-        Given("UserCoroutineRepository") {
+        Given("사용자 저장 요청이 주어졌을때") {
+            val userId = UserId(UUIDv7.randomUUID())
             val user =
-                UserR2dbcEntity(
-                    fullName = "John Doe",
-                    email = "john@example.com",
-                    userRole = UserRole.CUSTOMER,
-                    verificationType = VerificationType.EMAIL
+                User(
+                    "John Doe",
+                    "john@example.com",
+                    UserRole.ADMIN,
+                    TwoFactorAuth(),
+                    false,
+                    true,
+                    Instant.now(),
+                    Instant.now(),
+                    userId
                 )
+            val userR2dbcEntity = user.toR2dbcEntity()
+            val savedUserR2dbcEntity = userR2dbcEntity
+            coEvery {
+                userCoroutineRepository.save(any<UserR2dbcEntity>())
+            } returns savedUserR2dbcEntity
 
-            When("saving a new user") {
-                val savedUser = userRepository.save(user)
-
-                Then("the user should be saved with an ID") {
-                    savedUser.id shouldNotBe null
-                    savedUser.fullName shouldBe "John Doe"
-                    savedUser.email shouldBe "john@example.com"
-                    savedUser.userRole shouldBe UserRole.CUSTOMER
-                    savedUser.verificationType shouldBe VerificationType.EMAIL
+            When("saveUser 메소드를 호출 하면") {
+                val result = userPersistenceAdapter.saveUser(user)
+                Then("저장된 사용자 정보가 반환된다") {
+                    result.id?.value shouldBe savedUserR2dbcEntity.id
+                    result.fullName shouldBe savedUserR2dbcEntity.fullName
+                    result.email shouldBe savedUserR2dbcEntity.email
                 }
             }
-
-            When("finding a user by ID") {
-                val savedUser = userRepository.save(user)
-                val foundUser = userRepository.findById(savedUser.id)
-
-                Then("the user should be found") {
-                    foundUser shouldNotBe null
-                    foundUser?.fullName shouldBe "John Doe"
-                }
-            }
-
-            When("finding users by full name") {
-                userRepository.save(user)
-                val users = userRepository.findByFullName("John Doe").toList()
-
-                Then("the user should be found") {
-                    users.size shouldBe 1
-                    users.first().email shouldBe "john@example.com"
-                }
-            }
-
-            When("updating a user with modifying query") {
-                val savedUser = userRepository.save(user)
-                val updatedRows = userRepository.updateWithModifying("Jane Doe", savedUser.id)
-
-                Then("the user should be updated") {
-                    updatedRows shouldBe 1
-                    val updatedUser = userRepository.findById(savedUser.id)
-                    updatedUser?.fullName shouldBe "Jane Doe"
-                }
-            }
-        }*/
+        }
     })

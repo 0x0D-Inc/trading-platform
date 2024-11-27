@@ -1,4 +1,4 @@
-package lab.home.tradingplatform.common
+package lab.home.tradingplatform.common.webflux
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.codec.ServerCodecConfigurer
